@@ -1,9 +1,10 @@
 package com.toong.androidnetworkchangereceiver;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,17 +13,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //        if(NetworkChangeReceiver.mIsNetworkAvailable) {
-        //            Toast.makeText(this, "s", Toast.LENGTH_SHORT).show();
-        //        }else{
-        //            Toast.makeText(this, "b", Toast.LENGTH_SHORT).show();
-        //        }
+        ConnectionStateMonitor m = new ConnectionStateMonitor();
+        m.enable(this);
 
-        if (AppStatus.getInstance(this).isOnline()) {
-            Toast.makeText(this, "You are online!!!!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "You are not online!!!!", Toast.LENGTH_SHORT).show();
-            Log.v("Home", "############################You are not online!!!!");
-        }
+
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+
+
     }
 }
